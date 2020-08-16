@@ -1,0 +1,37 @@
+dist: bionic
+services:
+  - docker
+language: c
+
+script:
+  - docker build --build-arg LIBTPMS_BRANCH=master       --build-arg SWTPM_BRANCH=master       -f ${DOCKERFILE} . || travis_terminate 1
+  - docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.3.0 -f ${DOCKERFILE} . || travis_terminate 1
+
+matrix:
+  include:
+  - os: linux
+    env: DOCKERFILE=Dockerfile.alpine
+
+  - os: linux
+    env: DOCKERFILE=Dockerfile.centos
+
+  - os: linux
+    env: DOCKERFILE=Dockerfile.fedora
+
+  - os: linux
+    env: DOCKERFILE=Dockerfile.ubuntu
+
+  - os: linux
+    env: DOCKERFILE=Dockerfile.debian
+
+  - os: linux
+    env: DOCKERFILE=Dockerfile.opensuse-tumbleweed
+
+  - os: linux
+    arch: arm64
+    env: DOCKERFILE=Dockerfile.fedora
+
+  - os: linux
+    arch: ppc64le
+    env: DOCKERFILE=Dockerfile.fedora
+

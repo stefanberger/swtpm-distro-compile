@@ -1,0 +1,22 @@
+FROM alpine:latest
+
+RUN apk add openssl-dev automake autoconf build-base libtool git make  \
+ && git clone https://github.com/stefanberger/libtpms.git \
+ && apk add socat gawk libtasn1-dev gnutls gnutls-utils gnutls-dev expect python3 libseccomp-dev softhsm \
+ && git clone https://github.com/stefanberger/swtpm.git
+
+ARG LIBTPMS_BRANCH=master
+RUN cd libtpms \
+ && git checkout ${LIBTPMS_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-tpm2 --with-openssl \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make -j$(nproc) install
+
+ARG SWTPM_BRANCH=master
+RUN cd swtpm \
+ && git checkout ${SWTPM_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-openssl --with-tss-user=root --with-tss-group=root \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make -j$(nproc) install

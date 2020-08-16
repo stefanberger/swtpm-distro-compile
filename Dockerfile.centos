@@ -1,0 +1,24 @@
+FROM centos:latest
+
+RUN dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel gawk git \
+ && git clone https://github.com/stefanberger/libtpms.git \
+ && dnf -y install which python3 expect libtasn1-devel socat trousers tpm-tools gnutls-devel gnutls-utils net-tools libseccomp-devel \
+ && pip3 install twisted \
+ && git clone https://github.com/stefanberger/swtpm.git
+
+ARG LIBTPMS_BRANCH=master
+RUN cd libtpms \
+ && git checkout ${LIBTPMS_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tpm2 --disable-dependency-tracking \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make install
+
+ARG SWTPM_BRANCH=master
+RUN cd swtpm \
+ && git checkout ${SWTPM_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl --disable-dependency-tracking \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make -j$(nproc) install
+
