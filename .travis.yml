@@ -35,3 +35,7 @@ matrix:
     arch: ppc64le
     env: DOCKERFILE=Dockerfile.fedora
 
+  - os: linux
+    arch: s390x
+    env: DOCKERFILE=Dockerfile.fedora
+
