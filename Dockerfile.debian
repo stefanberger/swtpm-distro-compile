@@ -8,7 +8,10 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && git clone https://github.com/stefanberger/swtpm.git
 
 ARG LIBTPMS_BRANCH=master
+ARG DATE
 RUN cd libtpms \
+ && echo ${DATE} > /.date \
+ && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl --with-tpm2 \
  && make -j$(nproc) V=1 \
@@ -17,6 +20,7 @@ RUN cd libtpms \
 
 ARG SWTPM_BRANCH=master
 RUN cd swtpm \
+ && git pull \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl \
  && make -j$(nproc) V=1 \
