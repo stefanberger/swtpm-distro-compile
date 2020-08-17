@@ -6,7 +6,10 @@ RUN apk add openssl-dev automake autoconf build-base libtool git make  \
  && git clone https://github.com/stefanberger/swtpm.git
 
 ARG LIBTPMS_BRANCH=master
+ARG DATE
 RUN cd libtpms \
+ && echo ${DATE} > /.date \
+ && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-tpm2 --with-openssl \
  && make -j$(nproc) V=1 \
@@ -15,6 +18,7 @@ RUN cd libtpms \
 
 ARG SWTPM_BRANCH=master
 RUN cd swtpm \
+ && git pull \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-openssl --with-tss-user=root --with-tss-group=root \
  && make -j$(nproc) V=1 \
