@@ -1,8 +1,9 @@
 FROM opensuse/tumbleweed:latest
 
-RUN zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
+RUN zypper ref && zypper update -y \
+ && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
  && git clone https://github.com/stefanberger/libtpms.git \
- && zypper install -y which python3 expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
+ && zypper install -y which python3-Twisted expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
  && zypper install system-user-tss \
  && git clone https://github.com/stefanberger/swtpm.git
 
