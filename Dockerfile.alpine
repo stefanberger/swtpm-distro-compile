@@ -1,6 +1,7 @@
 FROM alpine:latest
 
-RUN apk add openssl-dev automake autoconf build-base libtool git make  \
+RUN apk update && apk upgrade \
+ && apk add openssl-dev automake autoconf build-base libtool git make  \
  && git clone https://github.com/stefanberger/libtpms.git \
  && apk add socat gawk libtasn1-dev gnutls gnutls-utils gnutls-dev expect python3 libseccomp-dev softhsm \
  && git clone https://github.com/stefanberger/swtpm.git
