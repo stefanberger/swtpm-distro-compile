@@ -4,7 +4,8 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && apt-get -y update \
  && apt-get -y install automake autoconf libtool gcc build-essential libssl-dev pkg-config gawk git \
  && git clone https://github.com/stefanberger/libtpms.git \
- && apt-get -y install expect libtasn1-dev socat tpm-tools python3 python3-twisted gnutls-dev gnutls-bin net-tools libseccomp-dev softhsm \
+ && apt-get -y install expect libtasn1-dev socat tpm-tools python3 python3-twisted python3-pip python3-setuptools \
+    gnutls-dev gnutls-bin net-tools libseccomp-dev softhsm \
  && git clone https://github.com/stefanberger/swtpm.git
 
 ARG LIBTPMS_BRANCH=master
@@ -27,3 +28,7 @@ RUN cd swtpm \
  && make -j$(nproc) V=1 check \
  && make -j$(nproc) install
 
+RUN mkdir -p /tmp/myvtpm1.2 && mkdir -p /tmp/myvtpm2
+RUN [ "$SWTPM_BRANCH" = "stable-0.3.0" ] && chown tss:root /tmp/myvtpm1.2 || exit 0
+RUN swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert \
+ && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
