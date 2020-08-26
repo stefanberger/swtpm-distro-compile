@@ -1,9 +1,11 @@
 FROM opensuse/tumbleweed:latest
 
-RUN zypper ref && zypper update -y \
+RUN zypper ref && zypper dup -y \
  && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
  && git clone https://github.com/stefanberger/libtpms.git \
- && zypper install -y which python3-Twisted expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
+ && zypper install -y which python3-Twisted python3-cryptography python3-pip python3-setuptools \
+    expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
+    gnutls \
  && zypper install system-user-tss \
  && git clone https://github.com/stefanberger/swtpm.git
 
@@ -27,4 +29,7 @@ RUN cd swtpm \
  && useradd nobody \
  && make -j$(nproc) V=1 check \
  && make -j$(nproc) install
+
+RUN mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert \
+ && mkdir -p /tmp/myvtpm2   && swtpm_setup --tpmstate /tmp/myvtpm2 --create-ek-cert --create-platform-cert --tpm2
 
