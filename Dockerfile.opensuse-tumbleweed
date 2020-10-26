@@ -28,7 +28,7 @@ RUN cd swtpm \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tss-user=root --with-tss-group=tss \
  && make -j$(nproc) V=1 \
- && useradd nobody \
+ && useradd nobody || true \
  && make -j$(nproc) V=1 check \
  && make -j$(nproc) install
 
