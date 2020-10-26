@@ -9,6 +9,8 @@ RUN zypper ref && zypper dup -y \
  && zypper install system-user-tss \
  && git clone https://github.com/stefanberger/swtpm.git
 
+RUN if [ ! -x /usr/bin/flock ]; then zypper install -y busybox && ln -s /usr/bin/busybox /usr/bin/flock; fi
+
 ARG LIBTPMS_BRANCH=master
 ARG DATE
 RUN cd libtpms \
