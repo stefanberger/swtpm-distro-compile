@@ -26,7 +26,7 @@ RUN cd swtpm \
  && make -j$(nproc) V=1 \
  && echo "softhsm or certtool are crashing pkcs11 test case" \
  && echo "#!/usr/bin/env bash" > tests/test_tpm2_samples_swtpm_localca_pkcs11 \
- && make -j$(nproc) check VERBOSE=1 \
+ && make -j$(nproc) V=1 VERBOSE=1 check \
  && make -j$(nproc) install
 
 RUN mkdir -p /tmp/myvtpm1.2 && mkdir -p /tmp/myvtpm2

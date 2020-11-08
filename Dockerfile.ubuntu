@@ -25,7 +25,7 @@ RUN cd swtpm \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl \
  && make -j$(nproc) V=1 \
- && make -j$(nproc) V=1 check \
+ && make -j$(nproc) V=1 VERBOSE=1 check \
  && make -j$(nproc) install
 
 RUN mkdir -p /tmp/myvtpm1.2 && mkdir -p /tmp/myvtpm2
