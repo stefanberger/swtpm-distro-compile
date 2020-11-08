@@ -29,7 +29,7 @@ RUN cd swtpm \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tss-user=root --with-tss-group=tss \
  && make -j$(nproc) V=1 \
  && useradd nobody || true \
- && make -j$(nproc) V=1 check \
+ && make -j$(nproc) V=1 VERBOSE=1 check \
  && make -j$(nproc) install
 
 RUN mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert \
