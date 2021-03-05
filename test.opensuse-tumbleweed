@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# FROM opensuse/tumbleweed:latest
+
+zypper ref && zypper dup -y \
+ && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
+ && git clone https://github.com/stefanberger/libtpms.git \
+ && zypper install -y which python3-Twisted python3-cryptography python3-pip python3-setuptools \
+    expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
+    gnutls \
+ && git clone https://github.com/stefanberger/swtpm.git \
+ && zypper install -y system-user-tss
+[ $? -ne 0 ] && exit 1
+
+if [ ! -x /usr/bin/flock ]; then zypper install -y busybox && ln -s /usr/bin/busybox /usr/bin/flock; fi
+[ $? -ne 0 ] && exit 1
+
+LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master}
+DATE=${DATE}
+pushd libtpms \
+ && echo ${DATE} > /.date \
+ && git checkout -f master \
+ && git pull \
+ && git checkout ${LIBTPMS_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tpm2 \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make install \
+ && popd
+[ $? -ne 0 ] && exit 1
+
+SWTPM_BRANCH=${SWTPM_BRANCH:-master}
+pushd swtpm \
+ && git checkout -f master \
+ && git pull \
+ && git checkout ${SWTPM_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tss-user=root --with-tss-group=tss \
+ && make -j$(nproc) V=1 \
+ && useradd nobody || true \
+ && make -j$(nproc) V=1 VERBOSE=1 check \
+ && make -j$(nproc) install \
+ && popd
+[ $? -ne 0 ] && exit 1
+
+mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert --overwrite \
+ && mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2 --create-ek-cert --create-platform-cert --tpm2 --overwrite
+[ $? -ne 0 ] && exit 1
+
+exit 0

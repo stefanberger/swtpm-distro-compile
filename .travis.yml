@@ -4,9 +4,12 @@ services:
 language: c
 
 script:
-  - docker build --build-arg LIBTPMS_BRANCH=master       --build-arg SWTPM_BRANCH=master       -f ${DOCKERFILE} . || travis_terminate 1
-  - docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.5   -f ${DOCKERFILE} . || travis_terminate 1
-  - docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.4   -f ${DOCKERFILE} . || travis_terminate 1
+  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=master       --build-arg SWTPM_BRANCH=master       -f ${DOCKERFILE} . || travis_terminate 1; fi
+  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.5   -f ${DOCKERFILE} . || travis_terminate 1; fi
+  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.4   -f ${DOCKERFILE} . || travis_terminate 1; fi
+  - if [ -n "$IMG" ]; then docker run --privileged --env LIBTPMS_BRANCH=master       --env SWTPM_BRANCH=master     -v ${PWD}:/test ${IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
+  - if [ -n "$IMG" ]; then docker run --privileged --env LIBTPMS_BRANCH=stable-0.7.0 --env SWTPM_BRANCH=stable-0.5 -v ${PWD}:/test ${IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
+  - if [ -n "$IMG" ]; then docker run --privileged --env LIBTPMS_BRANCH=stable-0.7.0 --env SWTPM_BRANCH=stable-0.4 -v ${PWD}:/test ${IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
 
 matrix:
   include:
@@ -26,7 +29,7 @@ matrix:
     env: DOCKERFILE=Dockerfile.debian
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.opensuse-tumbleweed
+    env: IMG=opensuse/tumbleweed
 
   - os: linux
     arch: arm64
