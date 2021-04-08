@@ -20,6 +20,9 @@ matrix:
     env: DOCKERFILE=Dockerfile.centos
 
   - os: linux
+    env: DOCKERFILE=Dockerfile.centos-8
+
+  - os: linux
     env: DOCKERFILE=Dockerfile.fedora
 
   - os: linux

@@ -30,6 +30,7 @@ done
 for df in  \
 	Dockerfile.alpine \
 	Dockerfile.centos \
+	Dockerfile.centos-8 \
 	Dockerfile.debian \
 	Dockerfile.fedora \
 	Dockerfile.opensuse-tumbleweed \
