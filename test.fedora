@@ -1,34 +1,41 @@
-FROM fedora:latest
+#!/usr/bin/env bash
+# FROM fedora:latest
 
-RUN dnf -y update \
+dnf -y update \
  && dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel git \
  && git clone https://github.com/stefanberger/libtpms.git \
  && dnf -y install which expect libtasn1-devel socat tpm-tools trousers \
     python3 python3-twisted python3-cryptography python3-pip python3-setuptools \
     gnutls-devel gnutls-utils net-tools libseccomp-devel softhsm tss2 \
  && git clone https://github.com/stefanberger/swtpm.git
+[ $? -ne 0 ] && exit 1
 
-ARG LIBTPMS_BRANCH=master
-ARG DATE
-RUN cd libtpms \
+LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master}
+DATE=${DATE}
+pushd libtpms \
  && echo ${DATE} > /.date \
  && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tpm2 --disable-dependency-tracking \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 check \
- && make install
+ && make install \
+ && popd
+[ $? -ne 0 ] && exit 1
 
-ARG SWTPM_BRANCH=master
-RUN cd swtpm \
+SWTPM_BRANCH=${SWTPM_BRANCH:-master}
+pushd swtpm \
  && git pull \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl --disable-dependency-tracking \
  && make -j$(nproc) V=1 \
  && SWTPM_TEST_IBMTSS2=1 make -j$(nproc) V=1 VERBOSE=1 check \
- && make -j$(nproc) install
+ && make -j$(nproc) install \
+ && popd
+[ $? -ne 0 ] && exit 1
 
-RUN mkdir -p /tmp/myvtpm1.2 && mkdir -p /tmp/myvtpm2
-RUN [ "$SWTPM_BRANCH" = "stable-0.3.0" ] && chown tss:root /tmp/myvtpm1.2 || exit 0
-RUN swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert \
- && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
+mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert && \
+  mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
+[ $? -ne 0 ] && exit 1
+
+exit 0
