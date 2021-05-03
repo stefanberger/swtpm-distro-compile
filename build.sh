@@ -10,6 +10,7 @@ if [ -d /dev/vtpmx ]; then
 fi
 
 for img in \
+	fedora \
 	opensuse/tumbleweed;
 do
 	echo "------------------------------------"
@@ -32,7 +33,6 @@ for df in  \
 	Dockerfile.centos \
 	Dockerfile.centos-8 \
 	Dockerfile.debian \
-	Dockerfile.fedora \
 	Dockerfile.opensuse-tumbleweed \
 	Dockerfile.ubuntu; do
 	echo "------------------------------------"

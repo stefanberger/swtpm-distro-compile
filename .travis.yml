@@ -23,7 +23,7 @@ matrix:
     env: DOCKERFILE=Dockerfile.centos-8
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.fedora
+    env: IMG=fedora
 
   - os: linux
     env: DOCKERFILE=Dockerfile.ubuntu
@@ -36,13 +36,12 @@ matrix:
 
   - os: linux
     arch: arm64
-    env: DOCKERFILE=Dockerfile.fedora
+    env: IMG=fedora
 
   - os: linux
     arch: ppc64le
-    env: DOCKERFILE=Dockerfile.fedora
+    env: IMG=fedora
 
   - os: linux
     arch: s390x
-    env: DOCKERFILE=Dockerfile.fedora
-
+    env: IMG=fedora
