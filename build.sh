@@ -18,7 +18,7 @@ do
 	set -x
 	docker run \
 		--env LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master} \
-		--env SWTPM_BRANCH=${SWPTM_BRANCH:-master} \
+		--env SWTPM_BRANCH=${SWTPM_BRANCH:-master} \
 		--env DATE="${DATE:-none}" \
 		--rm \
 		--privileged \
@@ -33,7 +33,6 @@ for df in  \
 	Dockerfile.centos \
 	Dockerfile.centos-8 \
 	Dockerfile.debian \
-	Dockerfile.opensuse-tumbleweed \
 	Dockerfile.ubuntu; do
 	echo "------------------------------------"
 	echo ">>>>>> Building $df <<<<<<"
