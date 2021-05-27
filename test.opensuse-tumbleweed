@@ -5,7 +5,7 @@ zypper ref && zypper dup -y \
  && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
  && zypper install -y which python3-Twisted python3-cryptography python3-pip python3-setuptools \
     expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
-    gnutls \
+    gnutls json-glib-devel \
  && zypper install -y system-user-tss
 [ $? -ne 0 ] && exit 1
 if [ ! -d libtpms ]; then

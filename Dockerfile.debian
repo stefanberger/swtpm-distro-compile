@@ -6,7 +6,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
  && git clone https://github.com/stefanberger/libtpms.git \
  && apt-get -y install expect libtasn1-dev socat tpm-tools \
     python3 python3-twisted python3-cryptography python3-pip python3-setuptools \
-    gnutls-dev gnutls-bin net-tools libseccomp-dev softhsm \
+    gnutls-dev gnutls-bin net-tools libseccomp-dev softhsm libjson-glib-dev \
  && git clone https://github.com/stefanberger/swtpm.git
 
 ARG LIBTPMS_BRANCH=master

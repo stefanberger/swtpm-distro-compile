@@ -4,7 +4,7 @@ RUN apk update && apk upgrade \
  && apk add openssl-dev automake autoconf build-base libtool git make  \
  && git clone https://github.com/stefanberger/libtpms.git \
  && apk add socat gawk libtasn1-dev gnutls gnutls-utils gnutls-dev expect libseccomp-dev softhsm \
-    python3 py3-cryptography py3-pip py3-twisted py3-setuptools \
+    python3 py3-cryptography py3-pip py3-twisted py3-setuptools  json-glib-dev \
  && git clone https://github.com/stefanberger/swtpm.git
 
 ARG LIBTPMS_BRANCH=master
