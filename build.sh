@@ -3,7 +3,7 @@
 # to build without cache: build.sh --no-cache
 # to force a re-build of libtpms and swtpm: DATE=$(date) build.sh
 
-if [ -d /dev/vtpmx ]; then
+if [ -c /dev/vtpmx ]; then
 	# This creates test failures when using --privileged
 	echo "Remove tpm_vtpm_proxy from kernel."
 	exit 1
