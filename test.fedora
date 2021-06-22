@@ -20,7 +20,7 @@ pushd libtpms \
  && echo ${DATE} > /.date \
  && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
- && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tpm2 --disable-dependency-tracking \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tpm2 \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 check \
  && make install \
@@ -31,7 +31,7 @@ SWTPM_BRANCH=${SWTPM_BRANCH:-master}
 pushd swtpm \
  && git pull \
  && git checkout ${SWTPM_BRANCH} \
- && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl --disable-dependency-tracking \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl \
  && make -j$(nproc) V=1 \
  && SWTPM_TEST_IBMTSS2=1 make -j$(nproc) V=1 VERBOSE=1 check \
  && make -j$(nproc) install \
