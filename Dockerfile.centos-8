@@ -1,5 +1,10 @@
 FROM centos:8
 
+RUN rpm -e --nodeps centos-linux-repos \
+ && rpm -Uvh \
+    http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-4.el8.noarch.rpm \
+    http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-4.el8.noarch.rpm
+
 RUN dnf -y update \
  && dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel gawk git \
  && git clone https://github.com/stefanberger/libtpms.git \
