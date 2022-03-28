@@ -5,7 +5,7 @@ RUN rpm -e --nodeps centos-linux-repos \
      http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-8-4.el8.noarch.rpm \
      http://mirror.centos.org/centos/8-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-8-4.el8.noarch.rpm
 
-RUN dnf -y update \
+RUN dnf -y --nobest update \
  && dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel gawk git \
  && git clone https://github.com/stefanberger/libtpms.git \
  && dnf -y install which python3 python3-cryptography python3-pip python3-setuptools expect libtasn1-devel \
