@@ -43,8 +43,8 @@ matrix:
 
   - os: linux
     arch: ppc64le
-    env: IMG=fedora IMG_VERSION=33
+    env: IMG=fedora IMG_VERSION=36
 
   - os: linux
     arch: s390x
-    env: IMG=fedora IMG_VERSION=33
+    env: IMG=fedora IMG_VERSION=36
