@@ -1,6 +1,7 @@
-FROM ubuntu:latest
+#!/usr/bin/env bash
+#FROM ubuntu:latest
 
-RUN export DEBIAN_FRONTEND=noninteractive \
+export DEBIAN_FRONTEND=noninteractive \
  && apt-get -y update \
  && apt-get -y install automake autoconf libtool gcc build-essential libssl-dev pkg-config gawk git \
  && git clone https://github.com/stefanberger/libtpms.git \
@@ -8,27 +9,33 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     gnutls-dev gnutls-bin net-tools libseccomp-dev softhsm libjson-glib-dev \
  && git clone https://github.com/stefanberger/swtpm.git
 
-ARG LIBTPMS_BRANCH=master
-ARG DATE
-RUN cd libtpms \
+LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master}
+DATE=${DATE}
+pushd libtpms \
  && echo ${DATE} > /.date \
  && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl --with-tpm2 \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 check \
- && make install
+ && make install \
+ && popd
+[ $? -ne 0 ] && exit 1
 
-ARG SWTPM_BRANCH=master
-RUN cd swtpm \
+SWTPM_BRANCH=${SWTPM_BRANCH:-master}
+pushd swtpm \
  && git pull \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu --with-openssl \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 VERBOSE=1 check \
- && make -j$(nproc) install
+ && make -j$(nproc) install \
+ && popd
+[ $? -ne 0 ] && exit 1
 
-RUN mkdir -p /tmp/myvtpm1.2 && mkdir -p /tmp/myvtpm2
-RUN [ "$SWTPM_BRANCH" = "stable-0.3.0" ] && chown tss:root /tmp/myvtpm1.2 || exit 0
-RUN swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert \
- && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
+rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2
+mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert && \
+  mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
+[ $? -ne 0 ] && exit 1
+
+exit 0

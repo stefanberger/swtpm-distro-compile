@@ -29,7 +29,7 @@ matrix:
     env: IMG=fedora
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.ubuntu
+    env: IMG=ubuntu IMG_VERSION=latest
 
   - os: linux
     env: DOCKERFILE=Dockerfile.debian
