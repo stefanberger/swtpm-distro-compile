@@ -3,10 +3,12 @@
 
 zypper ref && zypper dup -y \
  && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
- && zypper install -y python3-Twisted python3-cryptography python3-pip python3-setuptools \
-    expect socat net-tools-deprecated libtasn1-devel gnutls-devel libseccomp-devel tpm-tools trousers softhsm \
+ && zypper install --force-resolution -y python3-Twisted python3-cryptography python3-pip python3-setuptools \
+    gnutls-devel \
+ && zypper install -y \
+    expect socat net-tools-deprecated libtasn1-devel libgnutls-devel libseccomp-devel tpm-tools trousers \
     gnutls json-glib-devel \
- && zypper install -y system-user-tss
+ && zypper install -y system-user-tss system-user-nobody
 [ $? -ne 0 ] && exit 1
 if [ ! -d libtpms ]; then
   git clone https://github.com/stefanberger/libtpms.git || exit 1
@@ -40,7 +42,6 @@ pushd swtpm \
  && git checkout ${SWTPM_BRANCH} \
  && ./autogen.sh --prefix=/usr --libdir=/usr/lib64 --with-openssl --with-tss-user=root --with-tss-group=tss \
  && make -j$(nproc) V=1 \
- && useradd nobody || true \
  && make -j$(nproc) V=1 VERBOSE=1 check \
  && make -j$(nproc) install \
  && popd
