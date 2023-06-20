@@ -16,11 +16,13 @@ fi
 
 LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master}
 DATE=${DATE}
+# on ppc64 it would install it into /usr/lib and then not find it with pkg-config
+[[ "$(uname -m)" =~ ^ppc64.* ]] && libdir=/usr/lib64
 pushd libtpms \
  && echo ${DATE} > /.date \
  && git pull \
  && git checkout ${LIBTPMS_BRANCH} \
- && ./autogen.sh --prefix=/usr --with-openssl --with-tpm2 \
+ && ./autogen.sh --prefix=/usr --with-openssl --with-tpm2 ${libdir:+--libdir ${libdir}} \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 check \
  && make install \
