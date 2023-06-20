@@ -32,7 +32,7 @@ matrix:
     env: IMG=ubuntu IMG_VERSION=latest
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.debian
+    env: IMG=debian
 
   - os: linux
     env: IMG=opensuse/tumbleweed
