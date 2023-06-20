@@ -10,6 +10,7 @@ if [ -c /dev/vtpmx ]; then
 fi
 
 for img in \
+	debian \
 	fedora \
 	opensuse/tumbleweed \
 	ubuntu;
@@ -32,8 +33,7 @@ done
 for df in  \
 	Dockerfile.alpine \
 	Dockerfile.centos \
-	Dockerfile.centos-8 \
-	Dockerfile.debian; do
+	Dockerfile.centos-8; do
 	echo "------------------------------------"
 	echo ">>>>>> Building $df <<<<<<"
 	docker build \
