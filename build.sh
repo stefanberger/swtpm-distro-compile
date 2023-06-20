@@ -11,7 +11,8 @@ fi
 
 for img in \
 	fedora \
-	opensuse/tumbleweed;
+	opensuse/tumbleweed \
+	ubuntu;
 do
 	echo "------------------------------------"
 	echo ">>>>>> Running tests in $df <<<<<<"
@@ -32,8 +33,7 @@ for df in  \
 	Dockerfile.alpine \
 	Dockerfile.centos \
 	Dockerfile.centos-8 \
-	Dockerfile.debian \
-	Dockerfile.ubuntu; do
+	Dockerfile.debian; do
 	echo "------------------------------------"
 	echo ">>>>>> Building $df <<<<<<"
 	docker build \
