@@ -2,7 +2,7 @@
 # FROM opensuse/tumbleweed:latest
 
 zypper ref && zypper dup -y \
- && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git \
+ && zypper install -y diff automake autoconf libtool gcc gcc-c++ make openssl-devel pkg-config git gawk \
  && zypper install --force-resolution -y python3-Twisted python3-cryptography python3-pip python3-setuptools \
     gnutls-devel \
  && zypper install -y \
