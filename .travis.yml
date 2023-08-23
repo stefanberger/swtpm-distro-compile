@@ -20,7 +20,7 @@ matrix:
     env: DOCKERFILE=Dockerfile.alpine
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.centos
+    env: IMG=quay.io/centos/centos IMG_VERSION=stream9
 
   - os: linux
     env: DOCKERFILE=Dockerfile.centos-8

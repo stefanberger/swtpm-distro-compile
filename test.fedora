@@ -5,7 +5,8 @@ dnf -y update \
  && dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel git \
  && dnf -y install which expect libtasn1-devel socat tpm-tools trousers \
     python3 python3-twisted python3-cryptography python3-pip python3-setuptools \
-    gnutls-devel gnutls-utils net-tools libseccomp-devel softhsm tss2 json-glib-devel
+    gnutls-devel gnutls-utils net-tools libseccomp-devel softhsm tss2 json-glib-devel \
+    gmp-devel
 [ $? -ne 0 ] && exit 1
 if [ ! -d libtpms ]; then
   git clone https://github.com/stefanberger/libtpms.git || exit 1
@@ -40,7 +41,8 @@ pushd swtpm \
  && popd
 [ $? -ne 0 ] && exit 1
 
-rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2
+# Need to delete certserial for older swtpm version only supporting up to 63 bits
+rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2 /var/lib/swtpm-localca/certserial
 mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert && \
   mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
 [ $? -ne 0 ] && exit 1

@@ -10,6 +10,7 @@ if [ -c /dev/vtpmx ]; then
 fi
 
 for img in \
+	quay.io/centos/centos:stream9 \
 	debian \
 	fedora \
 	opensuse/tumbleweed \
@@ -26,13 +27,12 @@ do
 		--privileged \
 		-v ${PWD}:/test \
 		${img} \
-		/test/test.$(echo ${img} | tr "/" "-") \
+		/test/test.$(echo ${img} | tr "/" "-" | cut -d ":" -f1) \
 		|| { echo "${img} failed."; exit 1; }
 done
 
 for df in  \
 	Dockerfile.alpine \
-	Dockerfile.centos \
 	Dockerfile.centos-8; do
 	echo "------------------------------------"
 	echo ">>>>>> Building $df <<<<<<"
