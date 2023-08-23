@@ -1,0 +1,32 @@
+From 96fc580a859609f6fa2e3396e2200cc59ed05bb5 Mon Sep 17 00:00:00 2001
+From: Stefan Berger <stefanb@linux.ibm.com>
+Date: Wed, 23 Aug 2023 08:55:30 -0400
+Subject: [PATCH] centos-8: Disable pkg-config for gmp
+
+---
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index c1074cd..6b8f51f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -269,13 +269,13 @@ if test $? -ne 0; then
+ fi
+ AC_SUBST([GLIB_LIBS])
+ 
+-GMP_CFLAGS=$(pkg-config --cflags gmp)
++GMP_CFLAGS="" #$(pkg-config --cflags gmp)
+ if test $? -ne 0; then
+    AC_MSG_ERROR("Is libgmp-dev/gmp-devel installed? -- could not get cflags")
+ fi
+ AC_SUBST([GMP_CFLAGS])
+ 
+-GMP_LIBS=$(pkg-config --libs gmp)
++GMP_LIBS="-lgmp" #$(pkg-config --libs gmp)
+ if test $? -ne 0; then
+    AC_MSG_ERROR("Is libgmp-dev/gmp-devel installed? -- could not get libs")
+ fi
+-- 
+2.41.0
+

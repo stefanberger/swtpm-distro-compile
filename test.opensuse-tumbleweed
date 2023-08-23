@@ -7,7 +7,7 @@ zypper ref && zypper dup -y \
     gnutls-devel \
  && zypper install -y \
     expect socat net-tools-deprecated libtasn1-devel libgnutls-devel libseccomp-devel tpm-tools trousers \
-    gnutls json-glib-devel \
+    gnutls json-glib-devel gmp-devel \
  && zypper install -y system-user-tss system-user-nobody
 [ $? -ne 0 ] && exit 1
 if [ ! -d libtpms ]; then
@@ -47,7 +47,8 @@ pushd swtpm \
  && popd
 [ $? -ne 0 ] && exit 1
 
-rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2
+# Need to delete certserial for older swtpm version only supporting up to 63 bits
+rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2 /var/lib/swtpm-localca/certserial
 mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert --overwrite \
  && mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2 --create-ek-cert --create-platform-cert --tpm2 --overwrite
 [ $? -ne 0 ] && exit 1
