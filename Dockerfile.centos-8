@@ -25,15 +25,10 @@ RUN cd libtpms \
  && make -j$(nproc) V=1 check \
  && make install
 
-COPY 0001-centos-8-Disable-pkg-config-for-gmp.patch /
-
 ARG SWTPM_BRANCH=master
 RUN cd swtpm \
  && git pull \
  && git checkout ${SWTPM_BRANCH} \
- && if [ -n "$(grep GMP_CFLAGS configure.ac)" ]; then \
-      patch -p1 < /0001-centos-8-Disable-pkg-config-for-gmp.patch; \
-    fi \
  && ./autogen.sh --prefix=/usr --with-openssl \
  && make -j$(nproc) V=1 \
  && make -j$(nproc) V=1 VERBOSE=1 check \
