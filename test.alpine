@@ -1,0 +1,50 @@
+#!/usr/bin/env sh
+#FROM alpine:latest
+
+apk update && apk upgrade \
+ && apk add openssl-dev automake autoconf bash build-base libtool git make  \
+    socat gawk libtasn1-dev gnutls gnutls-utils gnutls-dev expect libseccomp-dev softhsm \
+    python3 py3-cryptography py3-pip py3-twisted py3-setuptools json-glib-dev gmp-dev
+[ $? -ne 0 ] && exit 1
+if [ ! -d libtpms ]; then
+  git clone https://github.com/stefanberger/libtpms.git || exit 1
+fi
+if [ ! -d swtpm ]; then
+  git clone https://github.com/stefanberger/swtpm.git || exit 1
+fi
+
+LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master}
+DATE=${DATE}
+cd libtpms \
+ && echo ${DATE} > /.date \
+ && git pull \
+ && git checkout ${LIBTPMS_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-tpm2 --with-openssl \
+ && make -j$(nproc) V=1 \
+ && make -j$(nproc) V=1 check \
+ && make -j$(nproc) install \
+ && cd -
+[ $? -ne 0 ] && exit 1
+
+SWTPM_BRANCH=${SWTPM_BRANCH:-master}
+cd swtpm \
+ && git pull \
+ && git clean -xdf \
+ && git reset --hard HEAD \
+ && git checkout ${SWTPM_BRANCH} \
+ && ./autogen.sh --prefix=/usr --libdir=/usr/lib --with-openssl --with-tss-user=root --with-tss-group=root \
+ && make -j$(nproc) V=1 \
+ && echo "softhsm or certtool are crashing pkcs11 test case" \
+ && { for f in test_tpm2_swtpm_localca_pkcs11.test test_tpm2_samples_swtpm_localca_pkcs11; do echo -en '#!/usr/bin/env bash'"\nexit 77\n" > tests/${f}; done; } \
+ && make -j$(nproc) V=1 VERBOSE=1 check \
+ && make -j$(nproc) install \
+ && cd -
+[ $? -ne 0 ] && exit 1
+
+# Need to delete certserial for older swtpm version only supporting up to 63 bits
+rm -rf /tmp/myvtpm1.2 /tmp/myvtpm2 /var/lib/swtpm-localca/certserial
+mkdir -p /tmp/myvtpm1.2 && swtpm_setup --tpmstate /tmp/myvtpm1.2 --create-ek-cert --create-platform-cert && \
+  mkdir -p /tmp/myvtpm2 && swtpm_setup --tpmstate /tmp/myvtpm2   --create-ek-cert --create-platform-cert --tpm2
+[ $? -ne 0 ] && exit 1
+
+exit 0

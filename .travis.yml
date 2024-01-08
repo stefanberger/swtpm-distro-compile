@@ -17,7 +17,7 @@ script:
 matrix:
   include:
   - os: linux
-    env: DOCKERFILE=Dockerfile.alpine
+    env: IMG=alpine
 
   - os: linux
     env: IMG=quay.io/centos/centos IMG_VERSION=stream9
