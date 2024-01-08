@@ -11,6 +11,7 @@ fi
 
 for img in \
 	alpine \
+	quay.io/centos/centos:stream8 \
 	quay.io/centos/centos:stream9 \
 	debian \
 	fedora \
@@ -30,15 +31,4 @@ do
 		${img} \
 		/test/test.$(echo ${img} | tr "/" "-" | cut -d ":" -f1) \
 		|| { echo "${img} failed."; exit 1; }
-done
-
-for df in  \
-	Dockerfile.centos-8; do
-	echo "------------------------------------"
-	echo ">>>>>> Building $df <<<<<<"
-	docker build \
-		--build-arg LIBTPMS_BRANCH=${LIBTPMS_BRANCH:-master} \
-		--build-arg SWTPM_BRANCH=${SWTPM_BRANCH:-master} \
-		--build-arg DATE="${DATE:-none}" \
-		$@ -f $df . || { echo "$df failed."; exit 1; }
 done

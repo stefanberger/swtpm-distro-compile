@@ -4,15 +4,11 @@ services:
 language: c
 
 script:
-  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=master       --build-arg SWTPM_BRANCH=master       -f ${DOCKERFILE} . || travis_terminate 1; fi
-  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=stable-0.9   --build-arg SWTPM_BRANCH=stable-0.8   -f ${DOCKERFILE} . || travis_terminate 1; fi
-  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=stable-0.8   --build-arg SWTPM_BRANCH=stable-0.7   -f ${DOCKERFILE} . || travis_terminate 1; fi
-  - if [ -z "$IMG" ]; then docker build --build-arg LIBTPMS_BRANCH=stable-0.7.0 --build-arg SWTPM_BRANCH=stable-0.6   -f ${DOCKERFILE} . || travis_terminate 1; fi
-  - if [ -n "$IMG" ]; then docker run --name test --privileged --env LIBTPMS_BRANCH=master       --env SWTPM_BRANCH=master     -v ${PWD}:/test ${IMG}:${IMG_VERSION:-latest} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
-  - if [ -n "$IMG" ]; then docker commit test snapshot; docker rm test; export NEW_IMG="snapshot"; fi
-  - if [ -n "$IMG" ]; then docker run             --privileged --env LIBTPMS_BRANCH=stable-0.9   --env SWTPM_BRANCH=stable-0.8 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
-  - if [ -n "$IMG" ]; then docker run             --privileged --env LIBTPMS_BRANCH=stable-0.8   --env SWTPM_BRANCH=stable-0.7 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
-  - if [ -n "$IMG" ]; then docker run             --privileged --env LIBTPMS_BRANCH=stable-0.7.0 --env SWTPM_BRANCH=stable-0.6 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1; fi
+  - docker run --name test --privileged --env LIBTPMS_BRANCH=master       --env SWTPM_BRANCH=master     -v ${PWD}:/test ${IMG}:${IMG_VERSION:-latest} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker commit test snapshot; docker rm test; export NEW_IMG="snapshot"
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.9   --env SWTPM_BRANCH=stable-0.8 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.8   --env SWTPM_BRANCH=stable-0.7 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.7.0 --env SWTPM_BRANCH=stable-0.6 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
 
 matrix:
   include:
@@ -23,7 +19,7 @@ matrix:
     env: IMG=quay.io/centos/centos IMG_VERSION=stream9
 
   - os: linux
-    env: DOCKERFILE=Dockerfile.centos-8
+    env: IMG=quay.io/centos/centos IMG_VERSION=stream8
 
   - os: linux
     env: IMG=fedora
