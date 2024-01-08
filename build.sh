@@ -10,6 +10,7 @@ if [ -c /dev/vtpmx ]; then
 fi
 
 for img in \
+	alpine \
 	quay.io/centos/centos:stream9 \
 	debian \
 	fedora \
@@ -32,7 +33,6 @@ do
 done
 
 for df in  \
-	Dockerfile.alpine \
 	Dockerfile.centos-8; do
 	echo "------------------------------------"
 	echo ">>>>>> Building $df <<<<<<"
