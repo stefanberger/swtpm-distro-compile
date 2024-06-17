@@ -19,7 +19,7 @@ matrix:
     env: IMG=quay.io/centos/centos IMG_VERSION=stream9
 
   - os: linux
-    env: IMG=quay.io/centos/centos IMG_VERSION=stream8
+    env: IMG=quay.io/centos/centos IMG_VERSION=stream10-development
 
   - os: linux
     env: IMG=fedora
