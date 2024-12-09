@@ -6,9 +6,9 @@ language: c
 script:
   - docker run --name test --privileged --env LIBTPMS_BRANCH=master       --env SWTPM_BRANCH=master     -v ${PWD}:/test ${IMG}:${IMG_VERSION:-latest} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
   - docker commit test snapshot; docker rm test; export NEW_IMG="snapshot"
-  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.9   --env SWTPM_BRANCH=stable-0.8 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
-  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.8   --env SWTPM_BRANCH=stable-0.7 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
-  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.7.0 --env SWTPM_BRANCH=stable-0.6 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.10  --env SWTPM_BRANCH=stable-0.10 -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.9   --env SWTPM_BRANCH=stable-0.8  -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
+  - docker run             --privileged --env LIBTPMS_BRANCH=stable-0.8   --env SWTPM_BRANCH=stable-0.7  -v ${PWD}:/test ${NEW_IMG} /test/test.$(echo $IMG | tr "/" "-") || travis_terminate 1
 
 matrix:
   include:
@@ -39,8 +39,8 @@ matrix:
 
   - os: linux
     arch: ppc64le
-    env: IMG=fedora IMG_VERSION=36
+    env: IMG=fedora IMG_VERSION=40
 
   - os: linux
     arch: s390x
-    env: IMG=fedora IMG_VERSION=36
+    env: IMG=fedora IMG_VERSION=40
