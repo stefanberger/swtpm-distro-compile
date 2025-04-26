@@ -3,7 +3,7 @@
 
 dnf -y update \
  && dnf -y install diffutils make file automake autoconf libtool gcc gcc-c++ openssl-devel git \
- && dnf -y install which expect libtasn1-devel socat tpm-tools trousers \
+    gawk which expect libtasn1-devel socat tpm-tools trousers \
     python3 python3-twisted python3-cryptography python3-pip python3-setuptools \
     gnutls-devel gnutls-utils net-tools libseccomp-devel softhsm tss2 json-glib-devel \
     gmp-devel
